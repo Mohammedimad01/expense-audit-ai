@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime        # use the lean runtime stage
+    image: expense-audit-ai:latest
+    container_name: expense_audit_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env                 # secrets loaded from .env — never hard-coded here
+    environment:
+      # These can be overridden without touching .env
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Persist the audit trail across container restarts.
+    # Uses a named volume mounted at /app — the JSONL file lives inside.
+    volumes:
+      - audit_data:/app/audit_trail_data
+
+volumes:
+  audit_data:
+    driver: local

@@ -1,0 +1,57 @@
+# ============================================================
+# ExpenseAudit AI — .gitignore
+# IMPORTANT: .env is NEVER committed — secrets live there only
+# ============================================================
+
+# --- Secrets (NEVER commit) ---
+.env
+*.key
+*.pem
+credentials.json
+service_account.json
+token.json
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+MANIFEST
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.log
+
+# --- Audit trail (runtime-generated, may contain metadata) ---
+audit_trail.jsonl
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Build artefacts ---
+*.whl
+*.tar.gz
+
+# --- Generated reports (runtime output, not source) ---
+report*.json
