@@ -402,6 +402,8 @@ The synthetic data generator uses the [Faker](https://faker.readthedocs.io/) lib
 
 **Mohammed Imad Thotan** — Solo submission, Kaggle × Google AI Agents Capstone 2026
 
+🔗 **GitHub:** [github.com/Mohammedimad01/expense-audit-ai](https://github.com/Mohammedimad01/expense-audit-ai)
+
 ---
 
 ## License
