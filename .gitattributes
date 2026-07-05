@@ -1,0 +1,25 @@
+# Set default line ending behaviour for cross-platform consistency
+# Prevents CRLF/LF issues between Windows dev and Linux containers
+
+* text=auto
+
+# Explicitly text files
+*.py     text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.toml   text eol=lf
+*.txt    text eol=lf
+*.json   text eol=lf
+*.sh     text eol=lf
+*.cfg    text eol=lf
+*.ini    text eol=lf
+Dockerfile text eol=lf
+
+# Binary files — never mangle line endings
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.webp   binary
+*.whl    binary
+*.tar.gz binary

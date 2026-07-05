@@ -1,6 +1,11 @@
 # ExpenseAudit AI 🔍
 
+<p align="center">
+  <img src="docs/cover_image.png" alt="ExpenseAudit AI — Multi-Agent Expense Auditor" width="600"/>
+</p>
+
 > **Multi-agent expense-report auditing powered by Google ADK + Gemini 2.0 Flash**
+
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
 [![Google ADK](https://img.shields.io/badge/Google%20ADK-LlmAgent%20%7C%20SequentialAgent-orange)](https://google.github.io/adk-docs/)
