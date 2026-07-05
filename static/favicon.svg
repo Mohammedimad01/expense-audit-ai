@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!--
+    ExpenseAudit AI favicon — geometric circuit / audit motif.
+    Accent: electric cyan #00d9ff on near-black #0a0a0f.
+    Shape: outer square frame with cut corners (engineered feel),
+    inner circuit-trace cross, and four corner node dots.
+  -->
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="4" fill="#0a0a0f"/>
+
+  <!-- Outer frame — chamfered corners, 1px cyan stroke -->
+  <path
+    d="M6 3 L26 3 L29 6 L29 26 L26 29 L6 29 L3 26 L3 6 Z"
+    stroke="#00d9ff"
+    stroke-width="1.2"
+    fill="none"
+    opacity="0.7"
+  />
+
+  <!-- Horizontal trace -->
+  <line x1="3" y1="16" x2="12" y2="16" stroke="#00d9ff" stroke-width="1.2" opacity="0.5"/>
+  <line x1="20" y1="16" x2="29" y2="16" stroke="#00d9ff" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- Vertical trace -->
+  <line x1="16" y1="3" x2="16" y2="12" stroke="#00d9ff" stroke-width="1.2" opacity="0.5"/>
+  <line x1="16" y1="20" x2="16" y2="29" stroke="#00d9ff" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- Centre node — filled circle, full brightness -->
+  <circle cx="16" cy="16" r="3.5" fill="#00d9ff"/>
+
+  <!-- Glow ring around centre -->
+  <circle cx="16" cy="16" r="5.5" stroke="#00d9ff" stroke-width="0.8" fill="none" opacity="0.35"/>
+
+  <!-- Corner nodes — small squares, emerald -->
+  <rect x="10.5" y="10.5" width="3" height="3" rx="0.5" fill="#10b981" opacity="0.9"/>
+  <rect x="18.5" y="10.5" width="3" height="3" rx="0.5" fill="#10b981" opacity="0.9"/>
+  <rect x="10.5" y="18.5" width="3" height="3" rx="0.5" fill="#10b981" opacity="0.9"/>
+  <rect x="18.5" y="18.5" width="3" height="3" rx="0.5" fill="#10b981" opacity="0.9"/>
+
+  <!-- Tick mark in top-right — audit / verification motif -->
+  <polyline
+    points="22,8 24.5,11 28,6"
+    stroke="#10b981"
+    stroke-width="1.5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.85"
+  />
+</svg>

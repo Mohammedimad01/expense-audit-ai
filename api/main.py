@@ -26,7 +26,8 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from expense_audit import __version__
@@ -108,16 +109,106 @@ def _check_rate_limit(client_ip: str) -> None:
 # App initialisation
 # ──────────────────────────────────────────────────────────────────────────────
 
+# WHY docs_url=None / redoc_url=None:
+# Disabling FastAPI's built-in Swagger route lets us serve a fully custom
+# HTML page at /docs with our own CSS injected, rather than the stock light
+# theme.  The OpenAPI JSON schema at /openapi.json is unaffected — only the
+# presentation layer changes.
 app = FastAPI(
     title="ExpenseAudit AI",
     description=(
-        "Multi-agent expense-report auditing system powered by Google ADK and Gemini 2.0 Flash. "
-        "Detects policy violations and fraud patterns in expense batches."
+        "Multi-agent expense-report auditing system powered by **Google ADK** "
+        "and **Gemini 2.0 Flash**.  \n\n"
+        "Detects policy violations and fraud patterns in expense batches using "
+        "three sequential LlmAgents backed by deterministic Python engines."
     ),
     version=__version__,
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url=None,     # served manually below with custom dark theme
+    redoc_url=None,    # not used — Swagger is the primary UI
+    license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
 )
+
+# Mount static assets (CSS theme + SVG favicon) at /static.
+# Must be done immediately after app creation so the /docs route can
+# reference /static/swagger-dark.css and /static/favicon.svg.
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui() -> HTMLResponse:
+    """
+    Serve Swagger UI with the custom dark fintech theme.
+
+    WHY hand-crafted HTML instead of get_swagger_ui_html()?
+    --------------------------------------------------------
+    This version of FastAPI's get_swagger_ui_html() only accepts
+    swagger_css_url which *replaces* the entire base Swagger CSS —
+    meaning our file would have to re-implement all of Swagger's layout
+    from scratch, which is fragile and maintenance-heavy.
+
+    Instead we write the HTML directly: load the standard CDN CSS first
+    (for layout/structure), then append our override stylesheet as a second
+    <link> tag.  Our CSS uses !important declarations to ensure overrides
+    take precedence.  This is the pattern recommended by Swagger UI docs
+    for theming without forking the base styles.
+    """
+    openapi_url = app.openapi_url or "/openapi.json"
+    swagger_js  = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"
+    swagger_css = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css"
+    preset_js   = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js"
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{app.title} — API Docs</title>
+  <meta name="description" content="ExpenseAudit AI API — multi-agent expense auditing powered by Google ADK and Gemini 2.0 Flash"/>
+
+  <!-- 1. Swagger UI base CSS (layout + structure) -->
+  <link rel="stylesheet" href="{swagger_css}"/>
+
+  <!-- 2. Our dark fintech override CSS (applied on top via !important) -->
+  <link rel="stylesheet" href="/static/swagger-dark.css"/>
+
+  <!-- Favicon: circuit-style SVG matching the accent color -->
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+
+  <script src="{swagger_js}" crossorigin></script>
+  <script src="{preset_js}" crossorigin></script>
+  <script>
+    window.onload = function() {{
+      SwaggerUIBundle({{
+        url: "{openapi_url}",
+        dom_id: "#swagger-ui",
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "StandaloneLayout",
+        // ── UX parameters ──────────────────────────────────────────────
+        // Collapse all by default for a clean first impression;
+        // the search filter lets users find endpoints instantly.
+        docExpansion:             "list",
+        defaultModelsExpandDepth: -1,       // hide Schemas section on load
+        defaultModelExpandDepth:  2,
+        filter:                   true,     // search bar
+        displayRequestDuration:   true,     // show response time (ms)
+        tryItOutEnabled:          false,    // require explicit "Try it out" click
+        persistAuthorization:     true,     // keep tokens across page reload
+        deepLinking:              true,     // anchor links per-endpoint
+        showExtensions:           true,
+        showCommonExtensions:     true,
+      }});
+    }};
+  </script>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
+
 
 
 # ──────────────────────────────────────────────────────────────────────────────
